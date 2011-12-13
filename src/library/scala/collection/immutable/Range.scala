@@ -83,7 +83,7 @@ extends collection.AbstractSeq[Int]
   }
 
   override def length: Int = numRangeElements
-  override lazy val last: Int =
+  override def last: Int =
     if (length == 0) Nil.last
     else locationAfterN(length - 1)
 
