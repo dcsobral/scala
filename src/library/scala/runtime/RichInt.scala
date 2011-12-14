@@ -27,7 +27,7 @@ final class RichInt(val self: Int) extends ScalaNumberProxy[Int] with RangedProx
     * @return A [[scala.collection.immutable.Range]] from `this` up to but
     *         not including `end`.
     */
-  def until(end: Int): Range = Range(self, end)
+  def until(end: Int): Range.IncOpenRange = new Range.IncOpenRange(self, end)
 
   /**
     * @param end The final bound of the range to make.
@@ -46,7 +46,7 @@ final class RichInt(val self: Int) extends ScalaNumberProxy[Int] with RangedProx
     * @return A [[scala.collection.immutable.Range]] from `'''this'''` up to
     *         and including `end`.
     */
-  def to(end: Int): Range.Inclusive = Range.inclusive(self, end)
+  def to(end: Int): Range.IncClosedRange = new Range.IncClosedRange(self, end)
 
   /**
     * @param end The final bound of the range to make.

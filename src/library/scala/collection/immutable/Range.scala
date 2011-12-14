@@ -71,7 +71,7 @@ extends collection.AbstractSeq[Int]
 
   def isInclusive = false
 
-  @inline final override def foreach[@specialized(Unit) U](f: Int => U) {
+  override def foreach[@specialized(Unit) U](f: Int => U) {
     if (length > 0) {
       val last = this.last
       var i = start
@@ -202,7 +202,7 @@ extends collection.AbstractSeq[Int]
    *
    *  $doesNotUseBuilders
    */
-  final override def reverse: Range =
+  override def reverse: Range =
     if (length > 0) new Range.Inclusive(last, start, -step)
     else this
 
@@ -262,6 +262,49 @@ object Range {
       NumericRange.count[Long](start, end, step, isInclusive)
   }
 
+  /** An optimized version of an open, single-stepped increasing Range */
+  class IncOpenRange(start0: Int, end0: Int) extends Range(start0, end0, 1) {
+    override protected def copy(start: Int, end: Int, step: Int): Range = new Range(start, end, step)
+
+    @inline
+    override final def foreach[@specialized(Unit) U](f: Int => U) {
+      var i = start
+      while (i < end) {
+        f(i)
+        i += 1
+      }
+    }
+  }
+
+  /** An optimized version of a closed, single-stepped increasing Range */
+  class IncClosedRange(start0: Int, end0: Int) extends Range.Inclusive(start0, end0, 1) {
+    override def reverse: Range.DecClosedRange = new DecClosedRange(end, start)
+
+    @inline
+    override final def foreach[@specialized(Unit) U](f: Int => U) {
+      var i = start
+      while (i <= end) {
+        f(i)
+        i += 1
+      }
+    }
+  }
+
+  /** An optimized version of a closed, single-stepped decreasing Range */
+  class DecClosedRange(start0: Int, end0: Int) extends Range.Inclusive(start0, end0, -1) {
+    override def reverse: Range.IncClosedRange = new IncClosedRange(end, start)
+
+    @inline
+    override final def foreach[@specialized(Unit) U](f: Int => U) {
+      var i = start
+      while (i >= end) {
+        f(i)
+        i -= 1
+      }
+    }
+  }
+
+  /** An inclusive Range */
   class Inclusive(start: Int, end: Int, step: Int) extends Range(start, end, step) {
 //    override def par = new ParRange(this)
     override def isInclusive = true
@@ -275,7 +318,7 @@ object Range {
 
   /** Make an range from `start` to `end` inclusive with step value 1.
    */
-  def apply(start: Int, end: Int): Range = new Range(start, end, 1)
+  def apply(start: Int, end: Int): IncOpenRange = new IncOpenRange(start, end)
 
   /** Make an inclusive range from start to end with given step value.
    * @note step != 0
@@ -284,7 +327,7 @@ object Range {
 
   /** Make an inclusive range from start to end with step value 1.
    */
-  @inline def inclusive(start: Int, end: Int): Range.Inclusive = new Inclusive(start, end, 1)
+  @inline def inclusive(start: Int, end: Int): Range.IncClosedRange = new IncClosedRange(start, end)
 
   // BigInt and Long are straightforward generic ranges.
   object BigInt {
