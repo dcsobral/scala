@@ -264,9 +264,8 @@ object Range {
 
   /** An optimized version of an open, single-stepped increasing Range */
   class IncOpenRange(start0: Int, end0: Int) extends Range(start0, end0, 1) {
-    override def reverse: Range.DecClosedRange =
-      if (length > 0) new Range.DecClosedRange(end - 1, start)
-      else this
+    // This is incorrect for end == Int.MinValue
+    override def reverse: Range.DecClosedRange = new Range.DecClosedRange(end - 1, start)
 
     @inline
     override final def foreach[@specialized(Unit) U](f: Int => U) {

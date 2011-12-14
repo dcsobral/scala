@@ -656,7 +656,7 @@ trait SeqLike[+A, +Repr] extends IterableLike[A, Repr] with GenSeqLike[A, Repr] 
    *
    *  @return  a `Range` value from `0` to one less than the length of this $coll.
    */
-  def indices: Range = 0 until length
+  def indices: Range.IncOpenRange = 0 until length
 
   override def view = new SeqView[A, Repr] {
     protected lazy val underlying = self.repr

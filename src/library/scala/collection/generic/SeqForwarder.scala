@@ -52,5 +52,5 @@ trait SeqForwarder[+A] extends Seq[A] with IterableForwarder[A] {
   override def containsSlice[B](that: GenSeq[B]): Boolean = underlying containsSlice that
   override def contains(elem: Any): Boolean = underlying contains elem
   override def corresponds[B](that: GenSeq[B])(p: (A,B) => Boolean): Boolean = underlying.corresponds(that)(p)
-  override def indices: Range = underlying.indices
+  override def indices: Range.IncOpenRange = underlying.indices
 }
