@@ -58,7 +58,7 @@ extends collection.AbstractSeq[Int]
   // The "x to y" piece should not trigger an exception. So the calculation
   // is delayed, which means it will not fail fast for those cases where failing
   // was correct.
-  private lazy val numRangeElements: Int = Range.count(start, end, step, isInclusive)
+  private def numRangeElements: Int = Range.count(start, end, step, isInclusive)
 
   protected def copy(start: Int, end: Int, step: Int): Range = new Range(start, end, step)
 
