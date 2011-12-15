@@ -270,6 +270,7 @@ object Range {
     @inline
     override final def foreach[@specialized(Unit) U](f: Int => U) {
       var i = start
+      // Make it i != end and go back to ByOne?
       while (i < end) {
         f(i)
         i += 1
@@ -284,6 +285,7 @@ object Range {
     @inline
     override final def foreach[@specialized(Unit) U](f: Int => U) {
       var i = start
+      // This is incorrect, for end == Int.MaxValue
       while (i <= end) {
         f(i)
         i += 1
@@ -298,6 +300,7 @@ object Range {
     @inline
     override final def foreach[@specialized(Unit) U](f: Int => U) {
       var i = start
+      // This is incorrect, for end == Int.MinValue
       while (i >= end) {
         f(i)
         i -= 1
