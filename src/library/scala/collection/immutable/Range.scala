@@ -74,6 +74,7 @@ extends collection.AbstractSeq[Int]
   override def foreach[@specialized(Unit) U](f: Int => U) {
     if (length > 0) {
       val last = this.last
+      val step = this.step
       var i = start
       while (i != last) {
         f(i)
